@@ -462,15 +462,13 @@ impl Layout {
 				// check children first
 				self.push_event_children(node_id, event, event_result, alterables, user_data)?;
 
-				if event_result.can_propagate() {
-					widget.process_event(
-						&mut self.get_event_params(l, node_id, style, alterables),
-						widget_id,
-						event,
-						event_result,
-						user_data,
-					)?;
-				}
+				widget.process_event(
+					&mut self.get_event_params(l, node_id, style, alterables),
+					widget_id,
+					event,
+					event_result,
+					user_data,
+				)?;
 			}
 		}
 

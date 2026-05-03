@@ -211,15 +211,19 @@ pub struct EventParams<'a> {
 
 #[derive(Clone, Copy, Eq, PartialEq, PartialOrd)]
 pub enum EventResult {
-	NoHit,    // event was pushed but has not found a listener (yet)
-	Pass,     // widget acknowledged it and allows the event to propagate further
-	Consumed, // widget triggered an action, do not propagate further
+	NoHit,             // event was pushed but has not found a listener (yet)
+	Pass,              // widget acknowledged it and allows the event to propagate further
+	Consumed,          // widget triggered an action, do not propagate further
+	ConsumedExclusive, // same as `Consumed`, but with force-disabled swipe-scroll event (used in sliders for example)
 }
 
 impl EventResult {
 	#[must_use]
-	pub const fn can_propagate(self) -> bool {
-		!matches!(self, EventResult::Consumed)
+	pub const fn can_propagate(&self) -> bool {
+		match &self {
+			EventResult::Consumed | EventResult::ConsumedExclusive => false,
+			_ => true,
+		}
 	}
 
 	#[must_use]
@@ -351,8 +355,6 @@ impl WidgetState {
 	}
 
 	pub fn get_scroll_shift_smooth(&self, info: &ScrollbarInfo, l: &taffy::Layout, timestep_alpha: f32) -> (Vec2, bool) {
-		//return (self.get_scroll_shift_raw(info, l), false);
-
 		let currently_animating = self.data.scrolling_cur != self.data.scrolling_cur_prev;
 
 		let scrolling = self
@@ -614,6 +616,20 @@ impl WidgetState {
 		Ok(EventResult::Pass)
 	}
 
+	fn process_swipe_event(&mut self, event: &Event, params: &EventParams) {
+		let Event::MouseDown(e) = &event else {
+			return;
+		};
+
+		// firstly, check if this widget is scrollable at all
+		let (active_x, active_y) = get_scroll_active_axis(&params.style, &params.taffy_layout);
+		if active_x || active_y {
+			log::info!("swipe");
+			self.data.press_down_start_mouse_pos = Some(e.pos);
+			self.data.swipe_scroll_start = self.data.scrolling_target;
+		}
+	}
+
 	pub fn process_event<'a, 'b, U1: 'static, U2: 'static>(
 		&mut self,
 		params: &'a mut EventParams<'a>,
@@ -622,6 +638,16 @@ impl WidgetState {
 		event_result: &'a mut EventResult,
 		user_data: &'a mut (&'b mut U1, &'b mut U2),
 	) -> anyhow::Result<()> {
+		// check if we should swipe-scroll this widget
+		if *event_result != EventResult::ConsumedExclusive {
+			self.process_swipe_event(event, params);
+		}
+
+		if !event_result.can_propagate() {
+			// we don't want to pass any other events
+			return Ok(());
+		}
+
 		let hovered = event.test_mouse_within_transform(params.alterables.transform_stack.get());
 
 		let mut invoke_data = InvokeData {
@@ -646,13 +672,6 @@ impl WidgetState {
 				res = Some(self.invoke_listeners(&mut invoke_data, EventListenerKind::MouseCancel, CallbackMetadata::None)?);
 			}
 			Event::MouseDown(e) => {
-				// firstly, check if this widget is scrollable at all
-				let (active_x, active_y) = get_scroll_active_axis(&invoke_data.params.style, &invoke_data.params.taffy_layout);
-				if active_x || active_y {
-					self.data.press_down_start_mouse_pos = Some(e.pos);
-					self.data.swipe_scroll_start = self.data.scrolling_target;
-				}
-
 				if hovered && self.data.set_device_pressed(e.device, true) {
 					res = Some(self.invoke_listeners(
 						&mut invoke_data,

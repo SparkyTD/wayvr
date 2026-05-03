@@ -556,7 +556,7 @@ fn register_event_mouse_press(
 				index: hovered_index,
 			});
 			state.update_value_to_mouse(event_data, &data, common, hovered_index);
-			Ok(EventResult::Consumed)
+			Ok(EventResult::ConsumedExclusive)
 		}),
 	)
 }
