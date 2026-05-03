@@ -804,7 +804,7 @@ impl View {
 		let btn_mute = data.fetch_component_as::<ComponentButton>("btn_mute")?;
 		let slider = data.fetch_component_as::<ComponentSlider>("slider")?;
 
-		slider.set_value(&mut common, params.control.on_volume_request()? / VOLUME_MULT);
+		slider.set_value_primary(&mut common, params.control.on_volume_request()? / VOLUME_MULT);
 
 		checkbox.set_checked(&mut common, params.checked);
 

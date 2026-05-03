@@ -476,17 +476,17 @@ fn reset_panel(
     let c = panel
         .parser_state
         .fetch_component_as::<ComponentSlider>("lerp_slider")?;
-    c.set_value(&mut com, state.positioning.get_lerp().unwrap_or(1.0));
+    c.set_value_primary(&mut com, state.positioning.get_lerp().unwrap_or(1.0));
 
     let c = panel
         .parser_state
         .fetch_component_as::<ComponentSlider>("alpha_slider")?;
-    c.set_value(&mut com, state.alpha);
+    c.set_value_primary(&mut com, state.alpha);
 
     let c = panel
         .parser_state
         .fetch_component_as::<ComponentSlider>("curve_slider")?;
-    c.set_value(&mut com, state.curvature.unwrap_or(0.0));
+    c.set_value_primary(&mut com, state.curvature.unwrap_or(0.0));
 
     let c = panel
         .parser_state

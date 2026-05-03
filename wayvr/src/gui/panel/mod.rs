@@ -581,7 +581,7 @@ pub fn apply_custom_command<T>(
                 .fetch_component_as::<ComponentSlider>(element)
             {
                 let value_f32 = value_str.parse::<f32>().context("Not a valid number")?;
-                slider.set_value(&mut com, value_f32);
+                slider.set_value_primary(&mut com, value_f32);
             } else if let Ok(radio) = panel
                 .parser_state
                 .fetch_component_as::<ComponentRadioGroup>(element)

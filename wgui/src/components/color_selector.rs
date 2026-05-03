@@ -163,9 +163,9 @@ impl ComponentColorSelector {
 
 		{
 			let mut common = layout.common();
-			slider_r.set_value(&mut common, state.color.r * 255.0);
-			slider_g.set_value(&mut common, state.color.g * 255.0);
-			slider_b.set_value(&mut common, state.color.b * 255.0);
+			slider_r.set_value_primary(&mut common, state.color.r * 255.0);
+			slider_g.set_value_primary(&mut common, state.color.g * 255.0);
+			slider_b.set_value_primary(&mut common, state.color.b * 255.0);
 		}
 
 		slider_r.on_value_changed(self.gen_slider_callback(ColorIndex::Red));

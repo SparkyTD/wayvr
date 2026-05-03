@@ -568,14 +568,6 @@ impl WidgetState {
 		event: &Event,
 	) -> anyhow::Result<EventResult> {
 		match &event {
-			Event::MouseDown(e) => {
-				// firstly, check if this widget is scrollable at all
-				let (active_x, active_y) = get_scroll_active_axis(&params.style, &params.taffy_layout);
-				if active_x || active_y {
-					self.data.press_down_start_mouse_pos = Some(e.pos);
-					self.data.swipe_scroll_start = self.data.scrolling_target;
-				}
-			}
 			Event::MouseUp(_e) => {
 				if self.data.swipe_running {
 					self.data.swipe_running = false;
@@ -654,6 +646,13 @@ impl WidgetState {
 				res = Some(self.invoke_listeners(&mut invoke_data, EventListenerKind::MouseCancel, CallbackMetadata::None)?);
 			}
 			Event::MouseDown(e) => {
+				// firstly, check if this widget is scrollable at all
+				let (active_x, active_y) = get_scroll_active_axis(&invoke_data.params.style, &invoke_data.params.taffy_layout);
+				if active_x || active_y {
+					self.data.press_down_start_mouse_pos = Some(e.pos);
+					self.data.swipe_scroll_start = self.data.scrolling_target;
+				}
+
 				if hovered && self.data.set_device_pressed(e.device, true) {
 					res = Some(self.invoke_listeners(
 						&mut invoke_data,
