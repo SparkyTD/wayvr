@@ -284,6 +284,8 @@ enum SettingType {
 	UsePassthrough,
 	UseSkybox,
 	GridOpacity,
+	WatchViewAngleMax,
+	WatchViewAngleMin,
 	XrClickSensitivity,
 	XrClickSensitivityRelease,
 	XwaylandByDefault,
@@ -339,6 +341,8 @@ impl SettingType {
 			Self::SpaceDragMultiplier => &mut config.space_drag_multiplier,
 			Self::PointerLerpFactor => &mut config.pointer_lerp_factor,
 			Self::GridOpacity => &mut config.grid_opacity,
+			Self::WatchViewAngleMax => &mut config.watch_view_angle_max,
+			Self::WatchViewAngleMin => &mut config.watch_view_angle_min,
 			_ => panic!("Requested f32 for non-f32 SettingType"),
 		}
 	}
@@ -440,6 +444,8 @@ impl SettingType {
 			Self::UprightScreenFix => Ok("APP_SETTINGS.UPRIGHT_SCREEN_FIX"),
 			Self::UsePassthrough => Ok("APP_SETTINGS.USE_PASSTHROUGH"),
 			Self::UseSkybox => Ok("APP_SETTINGS.USE_SKYBOX"),
+			Self::WatchViewAngleMax => Ok("APP_SETTINGS.WATCH_VIEW_ANGLE_MAX"),
+			Self::WatchViewAngleMin => Ok("APP_SETTINGS.WATCH_VIEW_ANGLE_MIN"),
 			Self::XrClickSensitivity => Ok("APP_SETTINGS.XR_CLICK_SENSITIVITY"),
 			Self::XrClickSensitivityRelease => Ok("APP_SETTINGS.XR_CLICK_SENSITIVITY_RELEASE"),
 			Self::XwaylandByDefault => Ok("APP_SETTINGS.XWAYLAND_BY_DEFAULT"),
@@ -464,6 +470,8 @@ impl SettingType {
 			Self::UseSkybox => Some("APP_SETTINGS.USE_SKYBOX_HELP"),
 			Self::XrClickSensitivity => Some("APP_SETTINGS.XR_CLICK_SENSITIVITY_HELP"),
 			Self::XrClickSensitivityRelease => Some("APP_SETTINGS.XR_CLICK_SENSITIVITY_RELEASE_HELP"),
+			Self::WatchViewAngleMin => Some("APP_SETTINGS.WATCH_VIEW_ANGLE_MIN_HELP"),
+			Self::WatchViewAngleMax => Some("APP_SETTINGS.WATCH_VIEW_ANGLE_MAX_HELP"),
 			_ => None,
 		}
 	}

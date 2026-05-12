@@ -19,6 +19,8 @@ impl State {
 		options_checkbox(par.mp, c, SettingType::BlockGameInput)?;
 		options_checkbox(par.mp, c, SettingType::BlockGameInputIgnoreWatch)?;
 		options_checkbox(par.mp, c, SettingType::BlockPosesOnKbdInteraction)?;
+		options_slider_f32(par.mp, c, SettingType::WatchViewAngleMin, 0.0, 1.0, 0.01)?;
+		options_slider_f32(par.mp, c, SettingType::WatchViewAngleMax, 0.0, 1.0, 0.01)?;
 		Ok(State {})
 	}
 }
