@@ -498,7 +498,7 @@ pub fn apply_custom_command<T>(
         ModifyPanelCommand::SetText(text) => {
             if let Ok(mut label) = panel
                 .parser_state
-                .fetch_widget_as::<WidgetLabel>(&com.state, element)
+                .fetch_widget_as::<WidgetLabel>(com.state, element)
             {
                 label.set_text(&mut com, Translation::from_raw_text(text));
             } else if let Ok(button) = panel
@@ -511,7 +511,7 @@ pub fn apply_custom_command<T>(
             }
         }
         ModifyPanelCommand::SetImage(path) => {
-            if let Ok(pair) = panel.parser_state.fetch_widget(&com.state, element) {
+            if let Ok(pair) = panel.parser_state.fetch_widget(com.state, element) {
                 let data = CustomGlyphData::from_assets(
                     &app.wgui_globals,
                     wgui::assets::AssetPath::File(path),
@@ -533,7 +533,7 @@ pub fn apply_custom_command<T>(
             let color = parse_color_hex(color)
                 .context("Invalid color format, must be a html hex color!")?;
 
-            if let Ok(pair) = panel.parser_state.fetch_widget(&com.state, element) {
+            if let Ok(pair) = panel.parser_state.fetch_widget(com.state, element) {
                 if let Some(mut rect) = pair.widget.get_as::<WidgetRectangle>() {
                     rect.set_color(&mut com, color);
                 } else if let Some(mut label) = pair.widget.get_as::<WidgetLabel>() {

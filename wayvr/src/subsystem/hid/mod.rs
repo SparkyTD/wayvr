@@ -25,6 +25,14 @@ mod x11;
 pub static USE_UINPUT: AtomicBool = AtomicBool::new(true);
 
 pub(super) fn initialize() -> Result<UInputProvider, Toast> {
+    const CHECK_UINPUT_MESSAGE: &str =
+        "Could not create uinput provider. Keyboard/Mouse input will not work!
+
+Check if the uinput kernel module is loaded: lsmod | grep uinput
+ - If not loaded, follow your distro's instructions to load the uinput kernel module.
+
+Check if you're in input group, run: id -nG";
+
     if !USE_UINPUT.load(std::sync::atomic::Ordering::Relaxed) {
         const UINPUT_DISABLED: &str = "Uinput disabled by user.";
         log::info!("{UINPUT_DISABLED}");
@@ -40,13 +48,6 @@ pub(super) fn initialize() -> Result<UInputProvider, Toast> {
         log::info!("Initialized uinput.");
         return Ok(uinput);
     }
-    const CHECK_UINPUT_MESSAGE: &str =
-        "Could not create uinput provider. Keyboard/Mouse input will not work!
-
-Check if the uinput kernel module is loaded: lsmod | grep uinput
- - If not loaded, follow your distro's instructions to load the uinput kernel module.
-
-Check if you're in input group, run: id -nG";
     let mut full_uinput_error = String::from(CHECK_UINPUT_MESSAGE);
     if let Ok(user) = std::env::var("USER") {
         let check_group_message = format!(

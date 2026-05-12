@@ -333,12 +333,12 @@ impl SubtabGeneralSettings {
 					}
 				})
 			}
-			slider_keying_curve.on_value_changed(get_slider_callback(&tasks));
-			slider_keying_despill.on_value_changed(get_slider_callback(&tasks));
-			slider_keying_hue_range.on_value_changed(get_slider_callback(&tasks));
-			slider_keying_saturation_range.on_value_changed(get_slider_callback(&tasks));
-			slider_keying_value_range.on_value_changed(get_slider_callback(&tasks));
-			cs_keying.on_changed(get_color_selector_callback(&tasks));
+			slider_keying_curve.on_value_changed(get_slider_callback(tasks));
+			slider_keying_despill.on_value_changed(get_slider_callback(tasks));
+			slider_keying_hue_range.on_value_changed(get_slider_callback(tasks));
+			slider_keying_saturation_range.on_value_changed(get_slider_callback(tasks));
+			slider_keying_value_range.on_value_changed(get_slider_callback(tasks));
+			cs_keying.on_changed(get_color_selector_callback(tasks));
 		}
 
 		Ok(Self {

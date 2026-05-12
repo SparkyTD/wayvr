@@ -146,7 +146,7 @@ impl View {
 	}
 
 	pub fn refresh_resolution_pips(&mut self, layout: &mut Layout, entry: &SkymapCatalogEntry) -> anyhow::Result<()> {
-		populate_res_pips(layout, self.id_resolution_pips, &mut self.parser_state, &entry)?;
+		populate_res_pips(layout, self.id_resolution_pips, &mut self.parser_state, entry)?;
 		Ok(())
 	}
 
@@ -163,6 +163,6 @@ impl View {
 	}
 
 	pub fn get_image(&self) -> Option<CustomGlyphData> {
-		return self.image.clone();
+		self.image.clone()
 	}
 }

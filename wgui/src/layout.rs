@@ -229,7 +229,7 @@ fn add_child_internal(
 }
 
 impl Layout {
-	pub fn common(&mut self) -> CallbackDataCommon<'_> {
+	pub const fn common(&mut self) -> CallbackDataCommon<'_> {
 		CallbackDataCommon {
 			alterables: &mut self.alterables,
 			state: &self.state,
@@ -480,7 +480,7 @@ impl Layout {
 		Ok(())
 	}
 
-	fn get_event_params<'a>(
+	const fn get_event_params<'a>(
 		&'a self,
 		l: &'a taffy::Layout,
 		node_id: taffy::NodeId,

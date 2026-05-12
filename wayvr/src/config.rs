@@ -48,7 +48,7 @@ where
     panic!("No usable config found.");
 }
 
-const SUPPORTED_EXTESIONS: [&'static str; 4] = ["yaml", "yml", "json", "json5"];
+const SUPPORTED_EXTESIONS: [&str; 4] = ["yaml", "yml", "json", "json5"];
 
 fn is_supported_config_file(path: &Path) -> bool {
     if path.is_dir() {

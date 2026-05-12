@@ -40,7 +40,7 @@ pub struct Limits {
 }
 
 impl Value {
-	pub fn get(&self) -> f32 {
+	pub const fn get(&self) -> f32 {
 		self.0
 	}
 
@@ -113,6 +113,7 @@ impl TooltipTrait for State {
 	}
 }
 
+#[allow(clippy::struct_field_names)]
 struct SliderHandleData {
 	id_handle_rect: WidgetID,  // Rectangle
 	id_text: Option<WidgetID>, // Text
@@ -146,7 +147,7 @@ impl ComponentTrait for ComponentSlider {
 		let value1 = state.value1.get();
 		state.set_value(&mut common, &self.data, ValueIndex::Primary, value1);
 
-		if let Some(value2) = state.value2.as_ref().map(|v| v.get()) {
+		if let Some(value2) = state.value2.as_ref().map(Value::get) {
 			state.set_value(&mut common, &self.data, ValueIndex::Secondary, value2);
 		}
 	}
@@ -169,7 +170,7 @@ impl ComponentSlider {
 		let state = self.state.borrow();
 		match index {
 			ValueIndex::Primary => Some(state.value1.get()),
-			ValueIndex::Secondary => state.value2.as_ref().map(|v| v.get()),
+			ValueIndex::Secondary => state.value2.as_ref().map(Value::get),
 		}
 	}
 
@@ -231,7 +232,7 @@ const HANDLE_WIDTH: f32 = 32.0;
 const HANDLE_HEIGHT: f32 = 24.0;
 
 impl State {
-	fn get_hovered_index(&self) -> Option<ValueIndex> {
+	const fn get_hovered_index(&self) -> Option<ValueIndex> {
 		if self.hovered1 {
 			Some(ValueIndex::Primary)
 		} else if self.hovered2 {
@@ -336,10 +337,10 @@ impl State {
 			on_value_changed(
 				common,
 				SliderValueChangedEvent {
-					index: index,
+					index,
 					value: value.get(),
 				},
-			)
+			);
 		}
 	}
 }
@@ -447,17 +448,13 @@ fn update_handle_hovers(
 	let hovered1_prev = state.hovered1;
 	let hovered2_prev = state.hovered2;
 
-	if !state.hovered_body {
-		state.hovered1 = false;
-		state.hovered2 = false;
-	} else {
+	if state.hovered_body {
 		let dist1 = get_handle_dist(common, &data.handle1, mouse_pos);
 
 		let dist2 = data
 			.handle2
 			.as_ref()
-			.map(|h| get_handle_dist(common, h, mouse_pos))
-			.unwrap_or(std::f32::MAX);
+			.map_or(f32::MAX, |h| get_handle_dist(common, h, mouse_pos));
 
 		state.hovered1 = dist1 <= MAX_HOVER_DIST;
 		state.hovered2 = dist2 <= MAX_HOVER_DIST;
@@ -470,6 +467,9 @@ fn update_handle_hovers(
 				state.hovered1 = false;
 			}
 		}
+	} else {
+		state.hovered1 = false;
+		state.hovered2 = false;
 	}
 
 	// hover state changed, run animations
@@ -516,12 +516,12 @@ fn register_event_mouse_motion(
 
 			update_handle_hovers(common, &data, &mut state, anim_mult, pos_relative);
 
-			if let Some(dragged_by) = &state.dragged_by {
-				if dragged_by.device == pos.device {
-					let index = dragged_by.index;
-					state.update_value_to_mouse(event_data, &data, common, index);
-					return Ok(EventResult::Consumed);
-				}
+			if let Some(dragged_by) = &state.dragged_by
+				&& dragged_by.device == pos.device
+			{
+				let index = dragged_by.index;
+				state.update_value_to_mouse(event_data, &data, common, index);
+				return Ok(EventResult::Consumed);
 			}
 
 			Ok(EventResult::Pass)

@@ -19,7 +19,7 @@ pub struct HttpClientResponse {
 }
 
 impl HttpClientResponse {
-	pub fn as_json<T>(self) -> anyhow::Result<T>
+	pub fn into_json<T>(self) -> anyhow::Result<T>
 	where
 		T: for<'a> serde::Deserialize<'a>,
 	{
@@ -66,12 +66,11 @@ pub async fn get(params: GetParams<'_>) -> anyhow::Result<HttpClientResponse> {
 	let (parts, body) = resp.into_parts();
 
 	// that's a pretty interesting way to get file size :]
-	if let Some(val) = parts.headers.get("Content-Length") {
-		if let Ok(str) = val.to_str() {
-			if let Ok(s) = str.parse() {
-				file_size = s;
-			}
-		}
+	if let Some(val) = parts.headers.get("Content-Length")
+		&& let Ok(str) = val.to_str()
+		&& let Ok(s) = str.parse()
+	{
+		file_size = s;
 	}
 
 	let mut on_progress = params.on_progress;

@@ -220,10 +220,7 @@ pub enum EventResult {
 impl EventResult {
 	#[must_use]
 	pub const fn can_propagate(&self) -> bool {
-		match &self {
-			EventResult::Consumed | EventResult::ConsumedExclusive => false,
-			_ => true,
-		}
+		!matches!(self, EventResult::Consumed | EventResult::ConsumedExclusive)
 	}
 
 	#[must_use]
@@ -582,15 +579,14 @@ impl WidgetState {
 			}
 			Event::MouseMotion(e) => {
 				if let Some(start_mouse_pos) = &self.data.press_down_start_mouse_pos {
-					let (active_x, active_y) = get_scroll_active_axis(&params.style, &params.taffy_layout);
+					let (active_x, active_y) = get_scroll_active_axis(params.style, params.taffy_layout);
 
-					if !self.data.swipe_running {
-						if (active_x && (e.pos.x - start_mouse_pos.x).abs() >= SWIPE_START_THRESHOLD_UNITS)
-							|| (active_y && (e.pos.y - start_mouse_pos.y).abs() >= SWIPE_START_THRESHOLD_UNITS)
-						{
-							self.data.swipe_running = true;
-							params.alterables.emit_global_event(Event::MouseCancel);
-						}
+					if !self.data.swipe_running
+						&& ((active_x && (e.pos.x - start_mouse_pos.x).abs() >= SWIPE_START_THRESHOLD_UNITS)
+							|| (active_y && (e.pos.y - start_mouse_pos.y).abs() >= SWIPE_START_THRESHOLD_UNITS))
+					{
+						self.data.swipe_running = true;
+						params.alterables.emit_global_event(Event::MouseCancel);
 					}
 
 					if self.data.swipe_running
@@ -600,8 +596,8 @@ impl WidgetState {
 
 						let mult = scrollbar_info.get_potential_scroll_axis_multiplier(params.taffy_layout);
 
-						let scroll_diff_x = if mult.x != 0.0 { -mouse_diff.x / mult.x } else { 0.0 };
-						let scroll_diff_y = if mult.y != 0.0 { -mouse_diff.y / mult.y } else { 0.0 };
+						let scroll_diff_x = if mult.x == 0.0 { 0.0 } else { -mouse_diff.x / mult.x };
+						let scroll_diff_y = if mult.y == 0.0 { 0.0 } else { -mouse_diff.y / mult.y };
 
 						self.data.scrolling_target = self.data.swipe_scroll_start + Vec2::new(scroll_diff_x, scroll_diff_y);
 						params.alterables.mark_tick(self.obj.get_id());
@@ -622,7 +618,7 @@ impl WidgetState {
 		};
 
 		// firstly, check if this widget is scrollable at all
-		let (active_x, active_y) = get_scroll_active_axis(&params.style, &params.taffy_layout);
+		let (active_x, active_y) = get_scroll_active_axis(params.style, params.taffy_layout);
 		if active_x || active_y {
 			self.data.press_down_start_mouse_pos = Some(e.pos);
 			self.data.swipe_scroll_start = self.data.scrolling_target;

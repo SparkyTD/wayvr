@@ -220,7 +220,7 @@ impl<T> Tab<T> for TabSettings<T> {
 			let mut common = frontend.layout.common();
 			let mut label = self
 				.state
-				.fetch_widget_as::<WidgetLabel>(&common.state, &format!("{id}_value"))?;
+				.fetch_widget_as::<WidgetLabel>(common.state, &format!("{id}_value"))?;
 
 			let translation = Translation {
 				text: text.into(),

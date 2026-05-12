@@ -158,7 +158,7 @@ impl View {
 
 		wgui_simple::create_loading(wgui_simple::CreateLoadingParams {
 			parent_id: id_loading_parent,
-			layout: layout,
+			layout,
 			with_text: false,
 		})?;
 

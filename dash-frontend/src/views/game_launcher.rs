@@ -59,12 +59,12 @@ impl ViewTrait for View {
 			}
 			for task in tasks {
 				match task {
-					Task::FillAppDetails(details) => self.action_fill_app_details(&mut par.layout, details)?,
+					Task::FillAppDetails(details) => self.action_fill_app_details(par.layout, details)?,
 					Task::Launch => self.action_launch(),
 					Task::SetCoverArt(cover_art) => {
 						let _ = self
 							.view_cover
-							.set_cover_art(&mut self.game_cover_view_common, &mut par.layout, &cover_art);
+							.set_cover_art(&mut self.game_cover_view_common, par.layout, &cover_art);
 					}
 				}
 			}
@@ -145,8 +145,8 @@ impl View {
 	) -> anyhow::Result<()> {
 		{
 			let mut c = layout.common();
-			let label_author = self.state.fetch_widget(&c.state, "label_author")?.widget;
-			let label_description = self.state.fetch_widget(&c.state, "label_description")?.widget;
+			let label_author = self.state.fetch_widget(c.state, "label_author")?.widget;
+			let label_description = self.state.fetch_widget(c.state, "label_description")?.widget;
 
 			if let Some(developer) = details.developers.pop() {
 				label_author

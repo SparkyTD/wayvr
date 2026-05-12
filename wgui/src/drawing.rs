@@ -207,6 +207,7 @@ pub struct HsvColor {
 	pub a: f32,
 }
 
+#[allow(clippy::many_single_char_names)]
 impl HsvColor {
 	pub const fn new(h: f32, s: f32, v: f32, a: f32) -> Self {
 		Self { h, s, v, a }

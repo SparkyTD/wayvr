@@ -225,7 +225,7 @@ impl ParserState {
 	/// but it keeps components data in this `ParserState` object for you.
 	/// The result can be safely dropped, all required event listeners and components
 	/// will be kept intact in this `ParserState`.
-	/// Resulting ParserData::components Vec will be left empty (they are moved into this `ParserState::data`)
+	/// Resulting `ParserData::components` Vec will be left empty (they are moved into this `ParserState::data`)
 	pub fn realize_template(
 		&mut self,
 		doc_params: &ParseDocumentParams,
@@ -245,7 +245,7 @@ impl ParserState {
 	/// Semi-internal - This function is suitable in cases if you don't want to pollute
 	/// the main parser state state with dynamic IDs (this won't propagate components!)
 	/// Use `realize_template` (or in some rare cases: `instantiate_template`) instead unless you want to handle `components` results yourself.
-	/// Make sure not to drop resulting ParserData if you want to have your listener handles valid
+	/// Make sure not to drop resulting `ParserData` if you want to have your listener handles valid
 	/// (they are contained in components). Use `realize_template` instead if you don't want to think about it.
 	pub fn parse_template_only(
 		&self,
@@ -282,7 +282,7 @@ impl ParserState {
 	/// Parse named <template> tag and process it.
 	/// Instantiate template by saving all the results into the main `ParserState`.
 	/// Be aware you this function will save ALL parsed IDs and other metadata
-	/// into your main ParserState context (deep move).
+	/// into your main `ParserState` context (deep move).
 	/// You shouldn't instantiate the same template twice, to prevent ID name clash.
 	/// Consider using `parse_template_only` or `realize_template` instead if you want
 	/// to instantiate more than a single template of the same type.

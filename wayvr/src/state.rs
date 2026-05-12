@@ -154,7 +154,6 @@ impl AppState {
         desktop_finder.refresh();
 
         let lang_provider = WayVRLangProvider::from_config(&session.config);
-        let executor = Rc::new(smol::LocalExecutor::new());
 
         let mut app_state = Self {
             session,

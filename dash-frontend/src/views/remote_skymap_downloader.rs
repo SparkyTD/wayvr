@@ -144,7 +144,7 @@ impl View {
 	pub fn new(par: Params) -> anyhow::Result<Self> {
 		let tasks = Tasks::<Task>::new();
 
-		let parser_state = wgui::parser::parse_from_assets(&doc_params(&par.globals), par.layout, par.parent_id)?;
+		let parser_state = wgui::parser::parse_from_assets(&doc_params(par.globals), par.layout, par.parent_id)?;
 		let id_resolution_buttons = parser_state.get_widget_id("resolution_buttons")?;
 
 		let str_version = par.globals.i18n().translate("VERSION");
@@ -249,9 +249,9 @@ impl View {
 	}
 
 	fn show_dialog_box_action(&mut self, resolution: SkymapResolution) -> anyhow::Result<()> {
-		const ACTION_REMOVE: &'static str = "remove";
-		const ACTION_DOWNLOAD_AGAIN: &'static str = "download_again";
-		const ACTION_APPLY: &'static str = "apply";
+		const ACTION_REMOVE: &str = "remove";
+		const ACTION_DOWNLOAD_AGAIN: &str = "download_again";
+		const ACTION_APPLY: &str = "apply";
 
 		let tasks = self.tasks.clone();
 
@@ -362,6 +362,7 @@ impl View {
 	}
 }
 
+#[allow(clippy::too_many_arguments)]
 pub fn mount_popup(
 	frontend_tasks: FrontendTasks,
 	executor: AsyncExecutor,

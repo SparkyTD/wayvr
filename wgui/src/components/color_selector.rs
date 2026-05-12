@@ -46,6 +46,7 @@ struct PopupState {
 	id_rect_color: WidgetID,
 }
 
+#[allow(clippy::struct_field_names)]
 struct State {
 	color: drawing::Color,
 	self_ref: Weak<ComponentColorSelector>,
@@ -83,16 +84,16 @@ impl ComponentTrait for ComponentColorSelector {
 	fn refresh(&self, data: &mut RefreshData) {
 		let mut state = self.state.borrow_mut();
 
-		if let Some(wants_open) = state.wants_open.take() {
-			if let Err(e) = self.open(data.layout, &mut state, wants_open.position) {
-				log::error!("{:?}", e);
-				debug_assert!(false);
-			}
+		if let Some(wants_open) = state.wants_open.take()
+			&& let Err(e) = self.open(data.layout, &mut state, wants_open.position)
+		{
+			log::error!("{e:?}");
+			debug_assert!(false);
 		}
 
 		self.data.button.set_text(
 			&mut data.layout.common(),
-			Translation::from_raw_text_string(format!("{}", state.color.to_hex_rgb())),
+			Translation::from_raw_text_string(state.color.to_hex_rgb()),
 		);
 
 		self.data.button.set_color(&mut data.layout.common(), state.color);
@@ -111,7 +112,7 @@ fn set_color_internal(state: &mut State, common: &mut CallbackDataCommon, color:
 	}
 
 	if let Some(on_changed) = &state.on_changed {
-		on_changed(common, ColorSelectorChangedEvent { color })
+		on_changed(common, ColorSelectorChangedEvent { color });
 	}
 
 	state.color = color;
@@ -148,7 +149,7 @@ impl ComponentColorSelector {
 		let id_content = self.window.get_content().id;
 
 		let parser_state = parser::parse_from_assets(
-			&mut ParseDocumentParams {
+			&ParseDocumentParams {
 				globals: layout.state.globals.clone(),
 				path: AssetPath::WguiInternal("wgui/color_selector.xml"),
 				extra: Default::default(),

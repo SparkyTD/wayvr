@@ -11,7 +11,6 @@ use wgui::{
 	globals::WguiGlobals,
 	layout::{WidgetID, WidgetPair},
 	parser::{Fetchable, ParseDocumentParams, ParserState},
-	task::Tasks,
 };
 use wlx_common::desktop_finder::DesktopEntry;
 
@@ -21,9 +20,6 @@ use crate::{
 	util::popup_manager::PopupHolder,
 	views::{self},
 };
-
-#[derive(Clone)]
-enum Task {}
 
 struct State {
 	view_launcher: PopupHolder<views::app_launcher::View>,
@@ -35,7 +31,6 @@ pub struct TabApps<T> {
 
 	state: Rc<RefCell<State>>,
 	app_list: AppList,
-	tasks: Tasks<Task>,
 	marker: PhantomData<T>,
 }
 
@@ -46,10 +41,6 @@ impl<T> Tab<T> for TabApps<T> {
 
 	fn update(&mut self, frontend: &mut Frontend<T>, _time_ms: u32, data: &mut T) -> anyhow::Result<()> {
 		let state = self.state.borrow_mut();
-
-		for task in self.tasks.drain() {
-			match task {}
-		}
 
 		self.app_list.tick(frontend, &self.state, &mut self.parser_state)?;
 
@@ -96,7 +87,6 @@ fn doc_params(globals: WguiGlobals) -> ParseDocumentParams<'static> {
 impl<T> TabApps<T> {
 	pub fn new(frontend: &mut Frontend<T>, parent_id: WidgetID, data: &mut T) -> anyhow::Result<Self> {
 		let globals = frontend.layout.state.globals.clone();
-		let tasks = Tasks::new();
 		let state = Rc::new(RefCell::new(State {
 			view_launcher: Default::default(),
 		}));
@@ -127,7 +117,6 @@ impl<T> TabApps<T> {
 			app_list,
 			parser_state,
 			state,
-			tasks,
 			marker: PhantomData,
 		})
 	}

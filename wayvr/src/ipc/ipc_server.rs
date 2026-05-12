@@ -49,19 +49,19 @@ fn read_check(expected_size: u32, res: std::io::Result<usize>) -> anyhow::Result
                 anyhow::bail!("End of stream");
             }
             if count as u32 == expected_size {
-                return Ok(true); // read succeeded
+                Ok(true) // read succeeded
             } else {
                 log::error!("count {count} is not {expected_size}");
-                return Ok(false);
+                Ok(false)
             }
         }
         Err(e) => match e.kind() {
             std::io::ErrorKind::WouldBlock => {
                 // no incoming data (this socket is non-blocking), try again later
-                return Ok(false);
+                Ok(false)
             }
             _ => {
-                anyhow::bail!("Connection error: {:?}", e);
+                anyhow::bail!("Connection error: {e:?}");
             }
         },
     }
@@ -500,7 +500,7 @@ impl Connection {
                     }
                 }
                 Err(e) => {
-                    log::debug!("Disconnecting client: {:?}", e);
+                    log::debug!("Disconnecting client: {e:?}");
                     self.alive = false;
                     break;
                 }

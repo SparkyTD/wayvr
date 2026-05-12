@@ -69,7 +69,7 @@ pub fn parse_component_slider(
 				step,
 			},
 			value1: slider::Value(initial_value1),
-			value2: initial_value2.map(|v| slider::Value(v)),
+			value2: initial_value2.map(slider::Value),
 			show_value: show_value != 0,
 			tooltip: tooltip.get_info(),
 		},

@@ -30,7 +30,7 @@ impl PlayspaceMover {
             Err(MndResult::ErrorInvalidVersion)
         ) {
             anyhow::bail!("Space offsets not supported.");
-        };
+        }
 
         Ok(Self {
             drag: None,

@@ -97,9 +97,9 @@ pub fn create_icon(layout: &mut Layout, id_parent: WidgetID, size: Vec2, path: A
 		id_parent,
 		widget_sprite,
 		taffy::Style {
-			min_size: size.clone(),
-			max_size: size.clone(),
-			size: size.clone(),
+			min_size: size,
+			max_size: size,
+			size,
 			..Default::default()
 		},
 	)?;
