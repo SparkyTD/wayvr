@@ -278,7 +278,7 @@ impl State {
 
 	fn set_value(&mut self, common: &mut CallbackDataCommon, data: &Data, index: ValueIndex, new_value: f32) {
 		let val1 = self.value1.get();
-		let val2 = self.value2.as_ref().map(|v| v.get()).unwrap_or(f32::MAX);
+		let val2 = self.value2.as_ref().map_or(f32::MAX, Value::get);
 
 		let Some(value) = (match index {
 			ValueIndex::Primary => Some(&mut self.value1),

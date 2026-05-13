@@ -1,6 +1,6 @@
 use std::{collections::HashMap, rc::Rc};
 
-use crate::tab::settings::{self, horiz_cell, mount_requires_restart, SettingType, Task};
+use crate::tab::settings::{self, SettingType, Task, horiz_cell, mount_requires_restart};
 use wgui::{
 	components::{
 		button::{ButtonClickEvent, ComponentButton},

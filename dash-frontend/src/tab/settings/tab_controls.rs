@@ -1,8 +1,8 @@
 use crate::tab::settings::{
+	SettingType, SettingsMountParams, SettingsTab,
 	macros::{
 		options_category, options_checkbox, options_dropdown, options_range_f32, options_slider_f32, options_slider_i32,
 	},
-	SettingType, SettingsMountParams, SettingsTab,
 };
 
 pub struct State {}
