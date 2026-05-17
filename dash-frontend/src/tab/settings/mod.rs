@@ -23,7 +23,7 @@ use wgui::{
 use wlx_common::{
 	config::GeneralConfig,
 	config_io::ConfigRoot,
-	dash_interface::{ConfigChangeKind, RecenterMode},
+	dash_interface::{ConfigChangeKind, InterfaceFeats, RecenterMode},
 };
 
 use crate::{
@@ -87,6 +87,7 @@ struct SettingsMountParams<'a> {
 	mp: &'a mut MacroParams<'a>,
 	frontend_tasks: &'a FrontendTasks,
 	id_parent: WidgetID,
+	feats: InterfaceFeats,
 }
 
 trait SettingsTab {
@@ -549,6 +550,8 @@ impl<T> TabSettings<T> {
 		let globals = frontend.layout.state.globals.clone();
 		self.current_tab = None;
 
+		let feats = frontend.interface.get_feats(data);
+
 		let mut mp = MacroParams {
 			layout: &mut frontend.layout,
 			parser_state: &mut self.state,
@@ -562,6 +565,7 @@ impl<T> TabSettings<T> {
 			mp: &mut mp,
 			id_parent: root,
 			frontend_tasks: &self.frontend_tasks,
+			feats,
 		};
 
 		match name {
