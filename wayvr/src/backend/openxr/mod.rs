@@ -346,9 +346,12 @@ pub fn openxr_run(
         app.hid_provider.inner.commit();
 
         let watch = overlays.mut_by_id(watch_id).unwrap(); // want panic
+        if watch.config.active_state.is_none() {
+            watch.config.activate(&mut app);
+        }
         let watch_state = watch.config.active_state.as_mut().unwrap();
         let watch_transform = watch_state.transform;
-        if watch_state.alpha < 0.05 {
+        if watch_state.alpha < 0.05 || !app.session.config.enable_watch {
             //FIXME: Temporary workaround for Monado bug
             watch_state.transform = Affine3A::from_scale(Vec3 {
                 x: 0.001,
@@ -510,7 +513,13 @@ pub fn openxr_run(
 
         //FIXME: Temporary workaround for Monado bug
         let watch = overlays.mut_by_id(watch_id).unwrap(); // want panic
-        watch.config.active_state.as_mut().unwrap().transform = watch_transform;
+
+        if let Some(state) = watch.config.active_state.as_mut() {
+            state.transform = watch_transform
+        }
+        if !app.session.config.enable_watch {
+            watch.config.deactivate();
+        }
     } // main_loop
 
     if let (Some(blocker), Some(monado)) = (blocker, app.monado_state.as_mut()) {
